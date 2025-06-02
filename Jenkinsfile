@@ -1,36 +1,47 @@
-pipeline{
-  agent any
-   tools{
-     maven 'Maven'
-   }
-   stages{
-    stage('Checkout'){
-      step{
-        git branch: 'master', url https://github.com/Khushijangir04/1bi22cs075.git
-      }
-  }
-  stage('Build'){
-    step{
-       sh 'mvn clean package'
+pipeline {
+    agent any  // Use any available agent
+
+    tools {
+        maven 'Maven'  // Ensure this matches the name configured in Jenkins
     }
-  }
-  stage ('Test'){
-   step{
-     sh 'mvn test'
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/Khushijangir04/1bi22cs075.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'  // Run Maven build
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'  // Run unit tests
+            }
+        }
+
+        
+        
+       
+        stage('Run Application') {
+            steps {
+                // Start the JAR application
+                sh 'java -jar target/1bi22cs075-1.0-SNAPSHOT.jar'
+            }
+        }
+
+        
     }
-   }
-  stage('Run'){
-     step{
-       sh 'java -jar target/1bi22cs075-1.0-SNAPSHOT'
-     }
-  }
- }
- post{
-  success{
-    echo 'Build Successful'
-   }
-  failure{
-    echo 'Build failed'
-   }
- }
+
+    post {
+        success {
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+    }
 }
